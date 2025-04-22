@@ -158,7 +158,6 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   description.textContent = movie.overview;
   textContent.appendChild(description);
 
-
   starButton.addEventListener('click', () => {
     const confirmation = document.getElementById(
       'confirmation',
@@ -171,4 +170,14 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   movieDiv.appendChild(textContent);
 
   return movieDiv;
+}
+
+const closeButton = document.querySelector('.close') as HTMLButtonElement;
+if (closeButton) {
+  closeButton.addEventListener('click', () => {
+    const confirmation = document.getElementById(
+      'confirmation',
+    ) as HTMLDialogElement;
+    confirmation?.close();
+  });
 }
