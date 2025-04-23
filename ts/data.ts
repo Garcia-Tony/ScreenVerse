@@ -21,6 +21,7 @@ function readData(): Data {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function writeData(): void {
   localStorage.setItem(dataKey, JSON.stringify(data));
 }
