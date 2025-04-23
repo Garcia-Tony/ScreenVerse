@@ -11,7 +11,6 @@ interface ApiResponse {
 
 let selectedMovie: MovieResult | null = null;
 
-
 const searchReset = document.getElementById('search-reset');
 const searchForm = document.getElementById('search-form') as HTMLFormElement;
 const searchInput = document.querySelector(
@@ -176,7 +175,6 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   return movieDiv;
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
   const closeButton = document.querySelector('.close') as HTMLButtonElement;
   if (closeButton) {
@@ -201,8 +199,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!alreadyExists) {
           data.watchlist.push(selectedMovie);
           writeData();
-          showToast('Added to Watchlist ✅');
+          const title = document.querySelector('#confirmation h4');
+          if (title) {
+            title.textContent = 'Added!';
+          }
 
+          setTimeout(() => {
+            const confirmation = document.getElementById(
+              'confirmation',
+            ) as HTMLDialogElement;
+            confirmation?.close();
+
+            if (title) {
+              title.innerHTML = 'Add<br> to<br> Watchlist?<br>';
+            }
+          }, 1000);
         }
       }
 
@@ -236,12 +247,11 @@ if (confirmButton) {
 
       if (!alreadyExists) {
         data.watchlist.push(selectedMovie);
-console.log('Movie added:', selectedMovie);
-console.log('Current watchlist:', data.watchlist);
-
+        console.log('Movie added:', selectedMovie);
+        console.log('Current watchlist:', data.watchlist);
 
         writeData();
-        showToast('Added to Watchlist ✅');
+        showToast('Added to Watchlist');
       }
     }
 
@@ -263,5 +273,5 @@ function showToast(message: string): void {
   setTimeout(() => {
     toast?.classList.remove('show');
     toast?.classList.add('hidden');
-  }, 2000);
+  }, 4000);
 }
