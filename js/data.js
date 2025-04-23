@@ -9,6 +9,7 @@ function readData() {
     return {
         view: 'search-form',
         movies: [],
+        watchlist: [],
     };
 }
 function writeData() {

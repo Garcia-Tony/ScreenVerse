@@ -9,6 +9,9 @@ interface ApiResponse {
   results: MovieResult[];
 }
 
+let selectedMovie: MovieResult | null = null;
+
+
 const searchReset = document.getElementById('search-reset');
 const searchForm = document.getElementById('search-form') as HTMLFormElement;
 const searchInput = document.querySelector(
@@ -159,6 +162,7 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   textContent.appendChild(description);
 
   starButton.addEventListener('click', () => {
+    selectedMovie = movie;
     const confirmation = document.getElementById(
       'confirmation',
     ) as HTMLDialogElement;
@@ -172,6 +176,44 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   return movieDiv;
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const closeButton = document.querySelector('.close') as HTMLButtonElement;
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      const confirmation = document.getElementById(
+        'confirmation',
+      ) as HTMLDialogElement;
+      confirmation?.close();
+    });
+  }
+
+  const confirmButton = document.querySelector('.confirm') as HTMLButtonElement;
+  if (confirmButton) {
+    confirmButton.addEventListener('click', () => {
+      if (selectedMovie) {
+        data.watchlist = data.watchlist || [];
+
+        const alreadyExists = data.watchlist.some(
+          (m) => m.title === selectedMovie?.title,
+        );
+
+        if (!alreadyExists) {
+          data.watchlist.push(selectedMovie);
+          writeData();
+          showToast('Added to Watchlist ✅');
+
+        }
+      }
+
+      const confirmation = document.getElementById(
+        'confirmation',
+      ) as HTMLDialogElement;
+      confirmation?.close();
+    });
+  }
+});
+
 const closeButton = document.querySelector('.close') as HTMLButtonElement;
 if (closeButton) {
   closeButton.addEventListener('click', () => {
@@ -180,4 +222,46 @@ if (closeButton) {
     ) as HTMLDialogElement;
     confirmation?.close();
   });
+}
+
+const confirmButton = document.querySelector('.confirm') as HTMLButtonElement;
+if (confirmButton) {
+  confirmButton.addEventListener('click', () => {
+    if (selectedMovie) {
+      data.watchlist = data.watchlist || [];
+
+      const alreadyExists = data.watchlist.some(
+        (m) => m.title === selectedMovie?.title,
+      );
+
+      if (!alreadyExists) {
+        data.watchlist.push(selectedMovie);
+console.log('Movie added:', selectedMovie);
+console.log('Current watchlist:', data.watchlist);
+
+
+        writeData();
+        showToast('Added to Watchlist ✅');
+      }
+    }
+
+    const confirmation = document.getElementById(
+      'confirmation',
+    ) as HTMLDialogElement;
+    confirmation?.close();
+  });
+}
+
+function showToast(message: string): void {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast?.classList.remove('show');
+    toast?.classList.add('hidden');
+  }, 2000);
 }
