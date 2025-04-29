@@ -9,11 +9,13 @@ interface ApiResponse {
   results: MovieResult[];
 }
 
-
+let selectedMovie: MovieResult | null = null;
 
 const searchReset = document.getElementById('search-reset');
 const searchForm = document.getElementById('search-form') as HTMLFormElement;
-const searchInput = document.querySelector('.search-bar input') as HTMLInputElement;
+const searchInput = document.querySelector(
+  '.search-bar input',
+) as HTMLInputElement;
 
 if (searchReset) {
   searchReset.addEventListener('click', () => {
@@ -30,8 +32,7 @@ if (searchReset) {
       searchTerm.textContent = '';
     }
 
-
-        viewSwap('search-form');
+    viewSwap('search-form');
   });
 }
 
@@ -60,13 +61,11 @@ const option = {
 function viewSwap(viewName: 'movie-results' | 'search-form'): void {
   const movieResultsView = document.querySelector('.movie-results-wrapper');
   const searchFormView = document.querySelector('.search-form-wrapper');
+  const logo = document.getElementById('image');
+  const searchBar = document.querySelector('.search-bar');
+  const noResult = document.querySelector('.no-result');
 
-    const logo = document.getElementById('image');
-    const searchBar = document.querySelector('.search-bar');
-    const noResult = document.querySelector('.no-result');
-
-
-  if (!movieResultsView || !searchFormView ) {
+  if (!movieResultsView || !searchFormView) {
     throw new Error('movieResultsView or searchFormView is null');
   }
   if (viewName === 'movie-results') {
@@ -80,15 +79,13 @@ function viewSwap(viewName: 'movie-results' | 'search-form'): void {
     logo?.classList.remove('hidden');
     searchBar?.classList.remove('hidden');
     noResult?.classList.add('hidden');
-
-    }
+  }
 
   data.view = viewName;
   writeData();
 }
 
-
-function displayMovies(movies: MovieResult[]):void {
+function displayMovies(movies: MovieResult[]): void {
   const movieContainer = document.getElementById('movie-container');
   const searchTerm = document.getElementById('search-term');
 
@@ -96,43 +93,40 @@ function displayMovies(movies: MovieResult[]):void {
     searchTerm.textContent = `Filtering for: ${decodeURIComponent(searchInput.value)}`;
     searchTerm.classList.remove('hide');
 
-
     for (const movie of movies) {
       const movieEntry = renderEntry(movie);
       movieContainer.appendChild(movieEntry);
-
-  }}}
-
-
-  async function fetchMovies(query: string): Promise<void> {
-    try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${encodeURIComponent(query)}`,
-        option,
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const fetchedData  = (await response.json()) as ApiResponse;
-      const noResult = document.querySelector('.no-result');
-
-
-  if (fetchedData.results.length === 0) {
-    noResult?.classList.remove('hidden');
-  } else {
-    noResult?.classList.add('hidden');
+    }
   }
+}
+
+async function fetchMovies(query: string): Promise<void> {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?include_adult=false&language=en-US&page=1&query=${encodeURIComponent(query)}`,
+      option,
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const fetchedData = (await response.json()) as ApiResponse;
+    const noResult = document.querySelector('.no-result');
+
+    if (fetchedData.results.length === 0) {
+      noResult?.classList.remove('hidden');
+    } else {
+      noResult?.classList.add('hidden');
+    }
     displayMovies(fetchedData.results);
     data.movies = fetchedData.results;
     writeData();
 
     viewSwap('movie-results');
-
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  } catch (error) {
+    console.error('Error:', error);
   }
+}
 
 function renderEntry(movie: MovieResult): HTMLDivElement {
   const movieDiv = document.createElement('div');
@@ -147,6 +141,9 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   const textContent = document.createElement('div');
   textContent.className = 'text-content';
 
+  const starButton = document.createElement('button');
+  starButton.className = 'star-button';
+  textContent.appendChild(starButton);
 
   const title = document.createElement('h3');
   title.className = 'movie-title';
@@ -163,9 +160,118 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   description.textContent = movie.overview;
   textContent.appendChild(description);
 
+  starButton.addEventListener('click', () => {
+    selectedMovie = movie;
+    const confirmation = document.getElementById(
+      'confirmation',
+    ) as HTMLDialogElement;
+    if (confirmation) {
+      confirmation.showModal();
+    }
+  });
 
   movieDiv.appendChild(textContent);
 
   return movieDiv;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const closeButton = document.querySelector('.close') as HTMLButtonElement;
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      const confirmation = document.getElementById(
+        'confirmation',
+      ) as HTMLDialogElement;
+      confirmation?.close();
+    });
+  }
+
+  const confirmButton = document.querySelector('.confirm') as HTMLButtonElement;
+  if (confirmButton) {
+    confirmButton.addEventListener('click', () => {
+      if (selectedMovie) {
+        data.watchlist = data.watchlist || [];
+
+        const alreadyExists = data.watchlist.some(
+          (m) => m.title === selectedMovie?.title,
+        );
+
+        if (!alreadyExists) {
+          data.watchlist.push(selectedMovie);
+          writeData();
+          const title = document.querySelector('#confirmation h4');
+          if (title) {
+            title.textContent = 'Added!';
+          }
+
+          setTimeout(() => {
+            const confirmation = document.getElementById(
+              'confirmation',
+            ) as HTMLDialogElement;
+            confirmation?.close();
+
+            if (title) {
+              title.innerHTML = 'Add<br> to<br> Watchlist?<br>';
+            }
+          }, 1000);
+        }
+      }
+
+      const confirmation = document.getElementById(
+        'confirmation',
+      ) as HTMLDialogElement;
+      confirmation?.close();
+    });
+  }
+});
+
+const closeButton = document.querySelector('.close') as HTMLButtonElement;
+if (closeButton) {
+  closeButton.addEventListener('click', () => {
+    const confirmation = document.getElementById(
+      'confirmation',
+    ) as HTMLDialogElement;
+    confirmation?.close();
+  });
+}
+
+const confirmButton = document.querySelector('.confirm') as HTMLButtonElement;
+if (confirmButton) {
+  confirmButton.addEventListener('click', () => {
+    if (selectedMovie) {
+      data.watchlist = data.watchlist || [];
+
+      const alreadyExists = data.watchlist.some(
+        (m) => m.title === selectedMovie?.title,
+      );
+
+      if (!alreadyExists) {
+        data.watchlist.push(selectedMovie);
+        console.log('Movie added:', selectedMovie);
+        console.log('Current watchlist', data.watchlist);
+
+        writeData();
+        showToast('Added to Watchlist');
+      }
+    }
+
+    const confirmation = document.getElementById(
+      'confirmation',
+    ) as HTMLDialogElement;
+    confirmation?.close();
+  });
+}
+
+function showToast(message: string): void {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast?.classList.remove('show');
+    toast?.classList.add('hidden');
+  }, 4000);
+}

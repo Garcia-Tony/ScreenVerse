@@ -2,7 +2,7 @@
 interface Data {
   view: 'movie-results' | 'search-form';
   movies: MovieResult[];
-
+  watchlist: MovieResult[];
 }
 
 const dataKey = 'movie-search-data';
@@ -17,10 +17,11 @@ function readData(): Data {
   return {
     view: 'search-form',
     movies: [],
-
+    watchlist: [],
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function writeData(): void {
   localStorage.setItem(dataKey, JSON.stringify(data));
 }
