@@ -11,6 +11,7 @@ function readData() {
     movies: [],
     watchlist: [],
   };
+
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function writeData() {
