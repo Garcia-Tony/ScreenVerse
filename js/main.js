@@ -1,8 +1,10 @@
+
 "use strict";
 const searchReset = document.getElementById('search-reset');
 const searchForm = document.getElementById('search-form');
 const searchInput = document.querySelector('.search-bar input');
 if (searchReset) {
+
     searchReset.addEventListener('click', () => {
         searchForm.reset();
         searchInput.value = '';

@@ -10,6 +10,7 @@ interface ApiResponse {
 }
 
 
+
 const searchReset = document.getElementById('search-reset');
 const searchForm = document.getElementById('search-form') as HTMLFormElement;
 const searchInput = document.querySelector('.search-bar input') as HTMLInputElement;
@@ -28,6 +29,7 @@ if (searchReset) {
     if (searchTerm) {
       searchTerm.textContent = '';
     }
+
 
         viewSwap('search-form');
   });
@@ -58,6 +60,7 @@ const option = {
 function viewSwap(viewName: 'movie-results' | 'search-form'): void {
   const movieResultsView = document.querySelector('.movie-results-wrapper');
   const searchFormView = document.querySelector('.search-form-wrapper');
+
     const logo = document.getElementById('image');
     const searchBar = document.querySelector('.search-bar');
     const noResult = document.querySelector('.no-result');
@@ -77,11 +80,13 @@ function viewSwap(viewName: 'movie-results' | 'search-form'): void {
     logo?.classList.remove('hidden');
     searchBar?.classList.remove('hidden');
     noResult?.classList.add('hidden');
+
     }
 
   data.view = viewName;
   writeData();
 }
+
 
 function displayMovies(movies: MovieResult[]):void {
   const movieContainer = document.getElementById('movie-container');
@@ -123,6 +128,7 @@ function displayMovies(movies: MovieResult[]):void {
     writeData();
 
     viewSwap('movie-results');
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -141,6 +147,7 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   const textContent = document.createElement('div');
   textContent.className = 'text-content';
 
+
   const title = document.createElement('h3');
   title.className = 'movie-title';
   title.textContent = movie.title;
@@ -156,7 +163,9 @@ function renderEntry(movie: MovieResult): HTMLDivElement {
   description.textContent = movie.overview;
   textContent.appendChild(description);
 
+
   movieDiv.appendChild(textContent);
 
   return movieDiv;
 }
+

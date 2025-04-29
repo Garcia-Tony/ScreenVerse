@@ -1,4 +1,5 @@
 
+
 a {
   color: white;
   text-decoration: none;
@@ -76,8 +77,10 @@ button {
 
 @media screen and (width >=600px) {
   .search-slide {
+
   justify-content: center;
   margin-top: 0;
+
   }
 }
 
@@ -98,9 +101,12 @@ button {
 }
 
 
+
 .hide {
   display: none;
 }
+
+
 
 
 
@@ -157,6 +163,7 @@ h2 {
   font-size: 20px;
   margin: 10px;
   padding-top: 10px;
+
 display: block;
 align-items: flex-start;
 }
@@ -208,6 +215,7 @@ margin-top: 30px;
 }
 
 
+
 .no-result {
 font-size: 30px;
 justify-content: center;
@@ -229,3 +237,4 @@ padding-top: 175px;
 .hidden {
   display: none;
 }
+
