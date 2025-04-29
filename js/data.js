@@ -1,3 +1,5 @@
+
+
 "use strict";
 const dataKey = 'movie-search-data';
 const data = readData();
@@ -9,10 +11,11 @@ function readData() {
     return {
         view: 'search-form',
         movies: [],
+
         watchlist: [],
+
     };
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function writeData() {
     localStorage.setItem(dataKey, JSON.stringify(data));
 }
