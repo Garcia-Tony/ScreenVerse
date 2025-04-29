@@ -186,7 +186,7 @@ if (confirmButton) {
       if (!alreadyExists) {
         data.watchlist.push(selectedMovie);
         console.log('Movie added:', selectedMovie);
-        console.log('Current watchlist:', data.watchlist);
+        console.log('Current watchlist', data.watchlist);
         writeData();
         showToast('Added to Watchlist');
       }
