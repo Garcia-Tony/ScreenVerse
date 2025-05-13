@@ -1,3 +1,6 @@
+
+<img width="1438" alt="Screen Shot 2025-05-12 at 7 38 12 PM" src="https://github.com/user-attachments/assets/41ff962f-40f8-4226-a112-caeaba89de3a" />
+
 #  ScreenVerse 🎞
 A web application for Movie Viewers who want to Watch Films.
 
